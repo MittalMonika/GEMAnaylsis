@@ -1,4 +1,16 @@
+import sys
+
 import ROOT
+ROOT.gROOT.SetBatch(True)
+
+
+
+import os
+#import ROOT
+#import sys
+#sys.argv.append( '-b-' )
+#ROOT.gROOT.SetBatch(True)
+
 import argparse
 from argparse import RawTextHelpFormatter
 from lib.ROOT_Utils import *
@@ -23,10 +35,14 @@ parser.add_argument('--batch', default=False, action='store_true',help="ROOT in 
 
 args = parser.parse_args()
 inputTag = args.input
-inputFile = "./Output/PFA_Analyzer_Output/CSV/"+inputTag+"/MatchingSummary_glb_rdphi_byVFAT.csv"
-
-outputFolder = "Output/PFA_Analyzer_Output/Plot/"+inputTag+"/"
+#inputFile = "./Output/PFA_Analyzer_Output/CSV/"+inputTag+"/MatchingSummary_glb_rdphi_byVFAT.csv"
+#inputFile = "./Output/PFA_Analyzer_Output/CSV_1/"+inputTag+"/Visulization_DeadChannels.csv"
+#inputFile = "./Output/PFA_Analyzer_Output/CSV_29Oct_withoutcuts/"+inputTag+"/Visulization_DeadChannels.csv"
+inputFile ="/eos/user/m/mmittal/www/GEMPlots/GEMDPG/Inactive_18Nov2022/"+inputTag+"/Visulization_DeadChannels.csv"
+#outputFolder = "Output/PFA_Analyzer_Output/Plot/"+inputTag+"/"
+outputFolder = "/eos/user/m/mmittal/www/GEMPlots/GEMDPG/Inactive_18Nov2022/"+inputTag+"/"
 subprocess.call(["mkdir", "-p", outputFolder])
+subprocess.call(["scp", "/eos/user/m/mmittal/www/GEMPlots/GEMDPG/Inactive/index.php", outputFolder])
 
 OutF = ROOT.TFile(outputFolder+"Summary.root","RECREATE")
 Text_Dict = {}
@@ -40,7 +56,7 @@ ROOT.gStyle.SetOptTitle(0) #Don't print titles
 ## ROOT Objects
 
 
-c1 = setUpCanvas("Eff_byVFAT",2000,2000)                     
+c1 = setUpCanvas("Eff_byVFAT",500,500)                     
 c1.SetLeftMargin(0.1)
 c1.SetRightMargin(0.1)      
 
@@ -61,10 +77,15 @@ for re,la in [(-1,1),(1,1),(-1,2),(1,2)]:
 
 
     for chamber in range(1,37):
+        #if(chamber != 10): continue
         current_chamber_ID = ReChLa2chamberName(re,chamber,la)
         for VFATN in range(24):
-            EfficiencyDictVFAT['glb_rdphi'][endcapTag][current_chamber_ID][VFATN]['num'] = df[ (df['chamberID']==current_chamber_ID) &(df['VFATN']==VFATN)]["matchedRecHit"].values[0]
-            EfficiencyDictVFAT['glb_rdphi'][endcapTag][current_chamber_ID][VFATN]['den'] = df[ (df['chamberID']==current_chamber_ID) &(df['VFATN']==VFATN)]["propHit"].values[0]
+        #for VFATN in range(1,25):
+            print(chamber,VFATN,current_chamber_ID)
+            EfficiencyDictVFAT['glb_rdphi'][endcapTag][current_chamber_ID][VFATN]['num'] = df[ (df['chamberID']==current_chamber_ID) &(df['VFATN']==VFATN)]["deadchannel"].values[0]
+            EfficiencyDictVFAT['glb_rdphi'][endcapTag][current_chamber_ID][VFATN]['den'] = df[ (df['chamberID']==current_chamber_ID) &(df['VFATN']==VFATN)]["totalchannels"].values[0]
+            print(EfficiencyDictVFAT['glb_rdphi'][endcapTag][current_chamber_ID][VFATN]['den'])
+            print(EfficiencyDictVFAT['glb_rdphi'][endcapTag][current_chamber_ID][VFATN]['num'])
 
 
             angle_deg = (chamber - 1)*10## degrees
@@ -79,7 +100,8 @@ for re,la in [(-1,1),(1,1),(-1,2),(1,2)]:
         writeToTFile(OutF,generate1DEfficiencyPlotbyVFAT(EfficiencyDictVFAT['glb_rdphi'],current_chamber_ID),endcapTag+"/")
         writeToTFile(OutF,generate2DEfficiencyPlotbyVFAT(EfficiencyDictVFAT['glb_rdphi'],current_chamber_ID),endcapTag+"/")
 
-for re,la in [(-1,1),(1,1),(-1,2),(1,2)]: 
+#for re,la in [(-1,1),(1,1),(-1,2),(1,2)]: 
+for re,la in [(-1,2)]: 
     endcapTag = EndcapLayer2label(re,la)
     s = generate2DEfficiencyPlotbyVFAT(EfficiencyDictVFAT["glb_rdphi"],endcapTag)
     s.Draw("COLZ TEXT")
@@ -90,6 +112,7 @@ for re,la in [(-1,1),(1,1),(-1,2),(1,2)]:
     c1.Modified()
     c1.Update()
     c1.SaveAs(outputFolder+endcapTag+".pdf")
+    c1.SaveAs(outputFolder+endcapTag+".png")
 
 
 print "Your ouput plots \t"+outputFolder

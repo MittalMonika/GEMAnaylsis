@@ -658,9 +658,9 @@ def generate2DEfficiencyPlotbyVFAT(EfficiencyDictVFAT,efficiency_target):
                 if VFAT_den == 0:
                     efficiency = 0 ## Bin has no text in case of no prop hit
                 elif VFAT_num == 0:
-                    efficiency = 0.01 ## Avoid empty label when printing it with text
+                    efficiency = 0 ## Avoid empty label when printing it with text
                 else:
-                    efficiency = round(float(VFAT_num)/VFAT_den,2)
+                    efficiency = VFAT_num # round(float(VFAT_num)/VFAT_den,2)
 
 
                 selected_bin = h2p.AddBin(4,rotated_and_translated_x,rotated_and_translated_y)
@@ -685,12 +685,15 @@ def generate2DEfficiencyPlotbyVFAT(EfficiencyDictVFAT,efficiency_target):
             VFAT_den = EfficiencyDictVFAT[endcapTag][chamber_ID][VFATN]['den'] 
             VFAT_num = EfficiencyDictVFAT[endcapTag][chamber_ID][VFATN]['num'] 
                 
-            if VFAT_den == 0:
-                efficiency = 0 ## Bin has no text in case of no prop hit
-            elif VFAT_num == 0:
-                    efficiency = 0.01 ## Avoid empty label when printing it with text
-            else:
-                efficiency = round(float(VFAT_num)/VFAT_den,2)
+            #if VFAT_den == 0:
+            #    efficiency = 0 ## Bin has no text in case of no prop hit
+            #elif VFAT_num == 0:
+            #        efficiency = 0. #0.01 ## Avoid empty label when printing it with text
+            #else:
+
+            #if VFAT_num == 0.1:
+            #        efficiency = 0 #0.01 ## Avoid empty label when printing it with text
+            efficiency = VFAT_num # round(float(VFAT_num)/VFAT_den,2)
 
             h2p.SetBinContent(selected_bin,efficiency)
 
@@ -705,6 +708,7 @@ def generate2DEfficiencyPlotbyVFAT(EfficiencyDictVFAT,efficiency_target):
     h2p.GetXaxis().SetTickLength(0.005)
     h2p.GetYaxis().SetLabelSize(0.03)
     h2p.GetXaxis().SetLabelSize(0.03)
+    h2p.SetMarkerSize(0.85)
     h2p.SetStats(False)
     return h2p
 

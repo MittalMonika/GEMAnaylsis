@@ -50,8 +50,7 @@ def downloadfile(url,histPM,mode):
         region=1
         txtfilename="DeadChannels_Positive.txt"
 
-    #For wheep plot
-    #now wheel plot is available at /eos/user/m/mmittal/www/GEMPlots/GEMDPG/Inactive_18Nov2022/runnumber/ #change it for code for whheel plot
+    
     vtxtfilename=pltdir+"/Visulization_DeadChannels.csv"     
 
     f_deadchannel_L1  = open(pltdir+txtfilename.split(".txt")[0]+"_L1.txt","w")
@@ -527,41 +526,11 @@ def downloadfile(url,histPM,mode):
 
 
 
-#funtion for vfat/eta conversion
 
 
 
-def extract_vfat(channel,ieta):
-    vfat=-1
-    if(channel <= 128):
-        if(ieta == 8) : vfat = 1
-        if(ieta == 7) : vfat = 2
-        if(ieta == 6) : vfat = 3
-        if(ieta == 5) : vfat = 4
-        if(ieta == 4) : vfat = 5
-        if(ieta == 3) : vfat = 6
-        if(ieta == 2) : vfat = 7
-        if(ieta == 1) : vfat = 8
-    if((channel >= 129) and (channel <= 256)  ):
-        if(ieta == 8) : vfat = 9
-        if(ieta == 7) : vfat = 10
-        if(ieta == 6) : vfat = 11
-        if(ieta == 5) : vfat = 12
-        if(ieta == 4) : vfat = 13
-        if(ieta == 3) : vfat = 14
-        if(ieta == 2) : vfat = 15
-        if(ieta == 1) : vfat = 16
-    if((channel >= 257) and (channel <= 384) ):
-        if(ieta == 8) : vfat = 17
-        if(ieta == 7) : vfat = 18
-        if(ieta == 6) : vfat = 19
-        if(ieta == 5) : vfat = 20
-        if(ieta == 4) : vfat = 21
-        if(ieta == 3) : vfat = 22
-        if(ieta == 2) : vfat = 23
-        if(ieta == 1) : vfat = 24
-   
-    return vfat     
+
+
 
 
 
@@ -665,25 +634,7 @@ myeos ="/eos/user/m/mmittal/SWAN_projects/GEMDPG/"
 offline = "/offline/data/browse/ROOT/OfflineData/"
 stream  ="StreamExpressCosmics"
 period = "Commissioning2021"
-run = "341343"
-run_= "3413"
 
-#/afs/cern.ch/work/m/mmittal/private/DeadChannelStudy/pfa/DigiHit/Monika/CMSSW_12_3_5/src/test/Outfiles/
-file_path="/eos/cms/store/group/dpg_gem/comm_gem/P5_Commissioning/2021/Calibration/test/DeadChannel/Output/DQM_V0001_GEM_R000"
-#runlist=["356670","356828","356990","357296","357452","357851","357962","357995","358132","358529","358567","358590","358647"]
-#runlist=["358685","358726","358772","358772"]
-#runlist=["359317","359398","359484","359644"]
-#runlist=["359839","359891","360161"]
-
-#def TextFileToList( textfile):
-#    return [iline.rstrip() for iline in open (textfile)]
-
-#runlist = TextFileToList("run_full.txt")
-runlist=["366512","366382"]
-for i in runlist:
-    print(i)
-    downloadfile(file_path+i+".root","GE11-M",'w')
-    downloadfile(file_path+i+".root","GE11-P",'a')
 
 
 
